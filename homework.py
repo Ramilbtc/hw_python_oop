@@ -1,5 +1,3 @@
-from turtle import distance
-
 class InfoMessage:
     """Информационное сообщение о тренировке."""
     def __init__(self,
@@ -38,11 +36,11 @@ class Training:
 
     def get_distance(self) -> float:
         """Получить дистанцию в км."""
-        return self.action * self.LEN_STEP / self.M_IN_KM # Дистанция за тренировку
+        return self.action * self.LEN_STEP / self.M_IN_KM 
 
     def get_mean_speed(self) -> float:
         """Получить среднюю скорость движения."""
-        return self.get_distance() / self.duration # Средняя скорость за тренировку
+        return self.get_distance() / self.duration 
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий.""" 
@@ -54,8 +52,7 @@ class Training:
                               self.duration,
                               self.get_distance(),
                               self.get_mean_speed(),
-                              self.get_spent_calories()
-                              )
+                              self.get_spent_calories())
         return message
 
 class Running(Training):
@@ -69,17 +66,17 @@ class Running(Training):
                 / self.M_IN_KM
                 * self.duration * self.minutes_in_hours) 
 
-
 class SportsWalking(Training):
     """Тренировка: спортивная ходьба."""
-    coeff_calorie_walking_1: float = 0.035 # const 1 walking (каллории)
-    coeff_calorie_walking_2: float = 0.029 # const 2 walking (каллории)
-    coeff_calorie_walking_3: float = 2 # const 3 walking (каллории)
+    coeff_calorie_walking_1: float = 0.035
+    coeff_calorie_walking_2: float = 0.029
+    coeff_calorie_walking_3: float = 2 
     def __init__(self,
                  action: int, # количество действий
                  duration: float, # длительность тренировки
                  weight: float, # вес спортсмена
-                 height: float) -> None:
+                 height: float
+                 ) -> None:
         super().__init__(action, duration, weight)
         self.height = height # рост спортсмена
 
