@@ -1,4 +1,6 @@
 from typing import Dict
+
+
 class InfoMessage:
     """Информационное сообщение о тренировке."""
 
@@ -149,6 +151,7 @@ def main(training: Training) -> None:
     """Главная функция."""
     info = training.show_training_info()
     return print(info.get_message())
+
 
 if __name__ == '__main__':
     packages = [
