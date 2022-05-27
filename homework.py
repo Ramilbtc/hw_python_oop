@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Type
 
 
 class InfoMessage:
@@ -51,8 +51,7 @@ class Training:
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
         raise NotImplementedError(
-            'Определить get_spent_calories в %s.' %
-            (self.__class__.__name__))
+            f'Определить get_spent_calories(self) в {self.__class__.__name__}')
 
     def show_training_info(self) -> InfoMessage:
         """Вернуть информационное сообщение о выполненной тренировке."""
@@ -66,13 +65,13 @@ class Training:
 class Running(Training):
     """Тренировка: бег."""
 
-    RUNNING_1_CONST: float = 18  # const 1 running (каллории)
-    RUNNING_2_CONST: float = 20  # const 2 running (каллории)
+    CALORIES_AVE_SPEED_MULTIPLIER: float = 18
+    CALORIES_SUBTRACTION_AVERAGE_SPEED: float = 20
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        return ((self.RUNNING_1_CONST * self.get_mean_speed()
-                - self.RUNNING_2_CONST) * self.weight
+        return ((self.CALORIES_AVE_SPEED_MULTIPLIER * self.get_mean_speed()
+                - self.CALORIES_SUBTRACTION_AVERAGE_SPEED) * self.weight
                 / self.M_IN_KM
                 * self.duration * self.MIN_IN_H_CONST)
 
@@ -80,9 +79,9 @@ class Running(Training):
 class SportsWalking(Training):
     """Тренировка: спортивная ходьба."""
 
-    WALKING_1_CONST: float = 0.035
-    WALKING_2_CONST: float = 0.029
-    WALKING_3_CONST: float = 2
+    CALORIES_WEIGHT_MULTIPLIER_1: float = 0.035
+    CALORIES_WEIGHT_MULTIPLIER_2: float = 0.029
+    CALORIES_DEGREE_AVERAGE_SPEED: float = 2
 
     def __init__(self,
                  action: int,  # количество действий
@@ -94,12 +93,12 @@ class SportsWalking(Training):
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        return ((self.WALKING_1_CONST
+        return ((self.CALORIES_WEIGHT_MULTIPLIER_1
                 * self.weight
                 + ((self.get_mean_speed()
-                    ** self.WALKING_3_CONST)
+                    ** self.CALORIES_DEGREE_AVERAGE_SPEED)
                     // self.height)
-                * self.WALKING_2_CONST
+                * self.CALORIES_WEIGHT_MULTIPLIER_2
                 * self.weight)
                 * self.duration
                 * self.MIN_IN_H_CONST)
@@ -108,8 +107,8 @@ class SportsWalking(Training):
 class Swimming(Training):
     """Тренировка: плавание."""
 
-    SWIMMING_1_CONST: float = 1.1  # const 1 swimming (каллории)
-    SWIMMING_2_CONST: float = 2  # const 2 swimming (каллории)
+    CALORIES_AVERAGE_SPEED: float = 1.1  # const 1 swimming (каллории)
+    CALORIES_WEIGHT_MULTIPLIER_3: float = 2  # const 2 swimming (каллории)
     LEN_STEP: float = 1.38  # расстояние (за один гребок)
 
     def __init__(self,
@@ -133,13 +132,13 @@ class Swimming(Training):
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        return ((self.get_mean_speed() + self.SWIMMING_1_CONST)
-                * self.SWIMMING_2_CONST * self.weight)
+        return ((self.get_mean_speed() + self.CALORIES_AVERAGE_SPEED)
+                * self.CALORIES_WEIGHT_MULTIPLIER_3 * self.weight)
 
 
 def read_package(workout_type: str, data: list) -> Training:
     """Прочитать данные полученные от датчиков."""
-    parameters_training: Dict[str, list] = {
+    parameters_training: Dict[str, Type[Training]] = {
         'SWM': Swimming,
         'RUN': Running,
         'WLK': SportsWalking
